@@ -1,0 +1,11 @@
+{
+  "users": {
+    "christian@unsw.edu.aud": {
+      "name": "Christian Yu",
+      "password": "adummypassword",
+      "sessionActive": true
+    }
+  },
+  "listings": {},
+  "bookings": {}
+}
