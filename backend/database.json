@@ -1,5 +1,11 @@
 {
-  "users": {},
+  "users": {
+    "test@test.com": {
+      "name": "test",
+      "password": "test",
+      "sessionActive": false
+    }
+  },
   "listings": {},
   "bookings": {}
 }
