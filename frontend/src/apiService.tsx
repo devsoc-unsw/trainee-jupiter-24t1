@@ -1,6 +1,20 @@
 // apiService.ts
 const BASE_URL = 'http://localhost:3000'; // Adjust the base URL if needed
 
+export interface Event {
+  name: string;
+  date: string;
+}
+
+export interface Restaurant {
+  name: string;
+  address: string;
+}
+
+export interface Accommodation {
+  name: string;
+  address: string;
+}
 // Interface for authentication responses
 export interface AuthResponse {
   token: string;
@@ -85,4 +99,18 @@ export const logout = (): Promise<void> => {
     .then(() => {
       localStorage.removeItem('authToken'); // Remove the token from localStorage
     });
+};
+
+export const getNearbyEvents = (location: string): Promise<Event[]> => {
+  return apiCall(`events?location=${location}`, 'GET');
+};
+
+// Function to fetch nearby restaurants
+export const getNearbyRestaurants = (location: string): Promise<Restaurant[]> => {
+  return apiCall(`restaurants?location=${location}`, 'GET');
+};
+
+// Function to fetch nearby accommodations
+export const getNearbyAccommodation = (location: string): Promise<Accommodation[]> => {
+  return apiCall(`accommodations?location=${location}`, 'GET');
 };

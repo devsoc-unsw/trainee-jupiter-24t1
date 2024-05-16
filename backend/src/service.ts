@@ -255,7 +255,7 @@ export const getAllListings = (): Promise<{ id: number; title: string; owner: st
       })),
     );
   });
-    
+
 export const updateListing = (listingId: string, title?: string, address?: string, thumbnail?: string, price?: number, metadata?: any): Promise<void> =>
   resourceLock((resolve, reject) => {
     if (address) {
@@ -276,7 +276,7 @@ export const updateListing = (listingId: string, title?: string, address?: strin
     save();
     resolve();
   });
-    
+
 export const removeListing = (listingId: string): Promise<void> =>
   resourceLock((resolve, reject) => {
     delete listings[listingId];
@@ -298,7 +298,7 @@ export const publishListing = (listingId: string, availability: any[]): Promise<
       resolve();
     }
   });
-    
+
 export const unpublishListing = (listingId: string): Promise<void> =>
   resourceLock((resolve, reject) => {
     if (listings[listingId].published === false) {
@@ -330,7 +330,7 @@ export const leaveListingReview = (email: string, listingId: string, bookingId: 
       resolve();
     }
   });
-    
+
 /***************************************************************
                        Booking Functions
 ***************************************************************/
@@ -342,7 +342,7 @@ const newBookingPayload = (owner: string, dateRange: any, totalPrice: number, li
   listingId,
   status: 'pending',
 });
-    
+
 export const makeNewBooking = (owner: string, dateRange: any, totalPrice: number, listingId: string): Promise<string> =>
   resourceLock((resolve, reject) => {
     if (!(listingId in listings)) {
@@ -362,7 +362,7 @@ export const makeNewBooking = (owner: string, dateRange: any, totalPrice: number
       resolve(id);
     }
   });
-    
+
 export const getAllBookings = (): Promise<{ id: number; owner: string; dateRange: any; totalPrice: number; listingId: string; status: 'pending' | 'accepted' | 'declined' }[]> =>
   resourceLock((resolve, reject) => {
     resolve(
@@ -376,7 +376,7 @@ export const getAllBookings = (): Promise<{ id: number; owner: string; dateRange
       })),
     );
   });
-    
+
 export const removeBooking = (bookingId: string): Promise<void> =>
   resourceLock((resolve, reject) => {
     delete bookings[bookingId];
