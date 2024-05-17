@@ -22,6 +22,18 @@ interface Listing {
   postedOn: string | null;
 }
 
+interface Event {
+  title: string,
+  description: string,
+  startDate: string,
+  endDate: string,
+  location: string,
+  organizer: string,
+  category: string,
+  price: string,
+  thumbnail: string
+}
+
 interface Booking {
   owner: string;
   dateRange: any;
@@ -41,6 +53,7 @@ const DATABASE_FILE = './database.json';
 
 let users: Record<string, User> = {};
 let listings: Record<string, Listing> = {};
+let events: Record<string, Event> = {}
 let bookings: Record<string, Booking> = {};
 
 const update = (users: Record<string, User>, listings: Record<string, Listing>, bookings: Record<string, Booking>): Promise<void> =>
@@ -89,6 +102,7 @@ try {
 ***************************************************************/
 
 const newListingId = (_: any) => generateId(Object.keys(listings));
+const newEventId = (_: any) => generateId(Object.keys(events));
 const newBookingId = (_: any) => generateId(Object.keys(bookings));
 
 export const resourceLock = <T>(
@@ -329,6 +343,113 @@ export const leaveListingReview = (email: string, listingId: string, bookingId: 
       save();
       resolve();
     }
+  });
+
+/***************************************************************
+                       Event Functions
+***************************************************************/
+const newEventPayload = (
+  title: string, 
+  description: string, 
+  startDate: string, 
+  endDate: string, 
+  location: string, 
+  organizer: string, 
+  category: string, 
+  price: string, 
+  thumbnail: string
+): Event => ({
+  title,
+  description,
+  startDate,
+  endDate,
+  location,
+  organizer,
+  category,
+  price,
+  thumbnail,
+});
+
+/**
+ * Adds a new event.
+ *
+ * @param {string} title - The title of the event.
+ * @param {string} description - A brief description of the event.
+ * @param {string} startDate - The start date and time of the event. You should change from a DateTime type to a string. 
+ * @param {string} endDate - The end date and time of the event. You should change from a DateTime type to a string. 
+ * @param {string} location - The location where the event will be held.
+ * @param {string} organizer - The name of the event organizer.
+ * @param {string} category - The category of the event (e.g., conference, workshop).
+ * @param {string} price - The price of the event ticket. Precision to two digits.
+ * @param {string} thumbnail - A URL to the thumbnail image for the event.
+ * @returns {Promise<string>} - A promise that resolves with the ID of the newly created event.
+ * @throws {InputError} - If any of the required parameters are missing or invalid.
+ * 
+ * To make this simpler, you can assume that all the inputs are correctly formatted.
+ */
+export const addEvent = (
+  title: string, 
+  description: string, 
+  startDate: string, 
+  endDate: string, 
+  location: string, 
+  organizer: string, 
+  category: string, 
+  price: string, 
+  thumbnail: string
+): Promise<string> =>
+  resourceLock((resolve, reject) => {
+    if (title === undefined) {
+      return reject(new InputError('Must provide a title for a new event'));
+    } else if (Object.keys(events).find((key) => events[key].title === title) !== undefined) {
+      return reject(new InputError('An event with this title already exists'));
+    } else if (description === undefined) {
+      return reject(new InputError('Must provide a description for a new event'));
+    } else if (startDate === undefined) {
+      return reject(new InputError('Must provide a start date or time for a new event'));
+    } else if (endDate === undefined) {
+      return reject(new InputError('Must provide an end data or time for a new event'));
+    } else if (location === undefined) {
+      return reject(new InputError('Must provide a location for a new event'));
+    } else if (organizer === undefined) {
+      return reject(new InputError('Must provide an organizer for a new event'));
+    } else if (category === undefined) {
+      return reject(new InputError('Must provide a category for a new event'));
+    } else if (price === undefined) {
+      return reject(new InputError('Must provide a valid price for new listing'));
+    } else if (thumbnail === undefined) {
+      return reject(new InputError('Must provide a thumbnail for new listing'));
+    } else {
+      const id = newEventId({});
+      events[id] = newEventPayload(title, description, startDate, endDate, location, organizer, category, price, thumbnail);
+      save();
+      resolve(id);
+    }
+  });
+
+export const getEventDetails = (eventId: string): Promise<Event> =>
+  resourceLock((resolve, reject) => {
+    resolve({
+      ...events[eventId],
+    });
+  });
+
+export const getAllEvents = (): Promise<{ id: number; title: string; description: string; startDate: string; endDate: string; location: string; organizer: string; category: string; price: string; thumbnail: string }[]> =>
+  resourceLock((resolve, reject) => {
+    resolve(
+      Object.keys(events).map((key) => ({
+        id: parseInt(key, 10),
+        title: events[key].title,
+        description: events[key].description,
+        startDate: events[key].startDate,
+        endDate: events[key].endDate,
+        location: events[key].location,
+        organizer: events[key].organizer,
+        category: events[key].category,
+        price: events[key].price,
+        thumbnail: events[key].thumbnail,
+      }))
+    );
   });
 
 /***************************************************************
