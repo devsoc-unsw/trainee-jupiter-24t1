@@ -8,7 +8,7 @@
     "young@ok.com": {
       "name": "Justin",
       "password": "qwerty",
-      "sessionActive": false
+      "sessionActive": true
     },
     "second@user.com": {
       "name": "Second",
