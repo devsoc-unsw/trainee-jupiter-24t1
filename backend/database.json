@@ -4,6 +4,16 @@
       "name": "test",
       "password": "test",
       "sessionActive": false
+    },
+    "young@ok.com": {
+      "name": "Justin",
+      "password": "qwerty",
+      "sessionActive": false
+    },
+    "second@user.com": {
+      "name": "Second",
+      "password": "qwerty",
+      "sessionActive": true
     }
   },
   "listings": {},
