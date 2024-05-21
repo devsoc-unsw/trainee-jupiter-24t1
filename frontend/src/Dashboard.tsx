@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, List, ListItem, ListItemText, Snackbar } from '@mui/material';
-import { getNearbyEvents, getNearbyRestaurants, getNearbyAccommodation, Event, Restaurant, Accommodation } from './apiService';
+import { getNearbyEvents, getNearbyRestaurants, getNearbyAccommodation, Event, Restaurant, Accommodation, RestaurantRecommendation, recommend } from './apiService';
 
 interface DashboardProps {
   handleLogout: () => void;
@@ -16,6 +16,8 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
   const [error, setError] = useState('');
+
+  const [recommendations, setRecommendations] = useState<RestaurantRecommendation[]>([]);
 
   const handleSearch = () => {
     if (!location || !startDate || !endDate || !interests || !preferences) {
@@ -48,8 +50,34 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
     setError('');
   };
 
+  const recommendRestaurants = async (city: string, userInterests: string[]): Promise<RestaurantRecommendation[]> => {
+    const response = await recommend(city, userInterests);
+
+    return response;
+  };
+
+  const handleRecommendButtonClick = async () => {
+    try {
+      const fetchedRecommendations = await recommendRestaurants('Paris', [
+        'Cheap Eats', 
+        'French', 
+        'Reservations', 
+        'Seating', 
+        'Wheelchair Accessible', 
+        'Serves Alcohol', 
+        'Accepts Credit Cards', 
+        'Table Service',
+      ]);
+      setRecommendations(fetchedRecommendations);
+    } catch (err) {
+      setError((err as Error).message);
+    }
+  };
+
   return (
     <Box p={3}>
+      <Button onClick={handleRecommendButtonClick}>Recommend</Button>
+      <Typography variant="h4" gutterBottom>{JSON.stringify(recommendations)}</Typography>
       <Typography variant="h4" gutterBottom>Dashboard</Typography>
       <TextField
         label="Enter location"

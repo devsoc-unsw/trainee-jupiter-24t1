@@ -97,3 +97,14 @@ export const getNearbyRestaurants = (location: string): Promise<Restaurant[]> =>
 export const getNearbyAccommodation = (location: string): Promise<Accommodation[]> => {
   return apiCall(`accommodations?location=${location}`, 'GET');
 };
+
+export interface RestaurantRecommendation {
+  restaurant_name: string;
+  city: string;
+  tokens: string[];
+}
+
+export const recommend = async (city: string, userInterests: string[]): Promise<RestaurantRecommendation[]> => {
+  const data = await apiCall('recommend/restaurants', 'POST', { city, userInterests });
+  return data;
+};

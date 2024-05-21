@@ -5,6 +5,10 @@ import cors from 'cors';
 import morgan from 'morgan';
 import express, { Request, Response, NextFunction } from 'express';
 
+import { Restaurant } from './recommendation/data';
+import { cosineSimilarity } from './recommendation/cosineSimilarity';
+import { readCSV } from './recommendation/data';
+
 import { InputError, AccessError } from './error';
 import swaggerDocument from '../swagger.json';
 import {
@@ -29,6 +33,7 @@ import {
   acceptBooking,
   declineBooking,
 } from './service';
+import path from 'path';
 
 const app = express();
 
@@ -259,6 +264,53 @@ app.put(
   ),
 );
 
+/***************************************************************
+                       Recommendations
+***************************************************************/
+app.post('/recommend/restaurants', async (req, res) => {
+  const { city, userInterests } = req.body;
+
+  if (!city || !userInterests || !Array.isArray(userInterests)) {
+    return res.status(400).json({ error: 'Invalid input' });
+  }
+
+  try {
+    const csvFilePath = path.join(__dirname, '/recommendation/rest.csv');
+    const restaurants: Restaurant[] = await readCSV(csvFilePath);
+
+    // Filter restaurants by city
+    const filteredRestaurants = restaurants.filter(rest => rest.city === city);
+
+    // Create a combined vocabulary
+    const vocabulary = Array.from(new Set(filteredRestaurants.flatMap(rest => rest.tokens).concat(userInterests)));
+
+    // Function to vectorize tokens
+    const vectorize = (tokens: string[]): number[] => {
+      return vocabulary.map(token => tokens.includes(token) ? 1 : 0);
+    };
+
+    // Vectorize user interests
+    const userVector = vectorize(userInterests);
+
+    // Calculate similarity scores
+    const recommendations = filteredRestaurants.map(rest => {
+      const restVector = vectorize(rest.tokens);
+      const similarity = cosineSimilarity(userVector, restVector);
+      return { ...rest, similarity };
+    });
+
+    // Sort recommendations by similarity
+    recommendations.sort((a, b) => b.similarity - a.similarity);
+
+    // Get top 10 recommendations
+    const topRecommendations = recommendations.slice(0, 10);
+
+    res.json(topRecommendations);
+  } catch (error) {
+    const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';
+    res.status(500).json({ error: errorMessage });
+  }
+});
 
 
 /***************************************************************
