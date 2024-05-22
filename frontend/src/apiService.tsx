@@ -100,7 +100,12 @@ export const getNearbyAccommodation = (location: string): Promise<Accommodation[
 
 export interface RestaurantRecommendation {
   restaurant_name: string;
+  country: string;
   city: string;
+  address: string;
+  popularity_detailed: string;
+  cuisines: string;
+  avg_rating: string;
   tokens: string[];
 }
 

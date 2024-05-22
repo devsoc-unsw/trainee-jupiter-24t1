@@ -305,6 +305,8 @@ app.post('/recommend/restaurants', async (req, res) => {
     // Get top 10 recommendations
     const topRecommendations = recommendations.slice(0, 10);
 
+    console.log(topRecommendations);
+
     res.json(topRecommendations);
   } catch (error) {
     const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';

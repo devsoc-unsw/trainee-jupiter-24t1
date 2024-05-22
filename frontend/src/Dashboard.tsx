@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Box, Typography, List, ListItem, ListItemText, Snackbar } from '@mui/material';
-import { getNearbyEvents, getNearbyRestaurants, getNearbyAccommodation, Event, Restaurant, Accommodation, RestaurantRecommendation, recommend } from './apiService';
+import { getNearbyEvents, getNearbyRestaurants, getNearbyAccommodation, Event, Accommodation, RestaurantRecommendation, recommend } from './apiService';
+import RestaurantListItem from './RestaurantListItem';
 
 interface DashboardProps {
   handleLogout: () => void;
@@ -8,19 +9,15 @@ interface DashboardProps {
 
 const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
   const [location, setLocation] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
-  const [interests, setInterests] = useState('');
   const [preferences, setPreferences] = useState('');
   const [events, setEvents] = useState<Event[]>([]);
-  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
   const [error, setError] = useState('');
 
   const [recommendations, setRecommendations] = useState<RestaurantRecommendation[]>([]);
 
   const handleSearch = () => {
-    if (!location || !startDate || !endDate || !interests || !preferences) {
+    if (!location || !preferences) {
       setError('Please fill in all fields');
       return;
     }
@@ -30,9 +27,8 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
       getNearbyRestaurants(location),
       getNearbyAccommodation(location)
     ])
-      .then(([eventsData, restaurantsData, accommodationsData]) => {
+      .then(([eventsData, accommodationsData]) => {
         setEvents(eventsData);
-        setRestaurants(restaurantsData);
         setAccommodations(accommodationsData);
         setError('');
       })
@@ -77,7 +73,6 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
   return (
     <Box p={3}>
       <Button onClick={handleRecommendButtonClick}>Recommend</Button>
-      <Typography variant="h4" gutterBottom>{JSON.stringify(recommendations)}</Typography>
       <Typography variant="h4" gutterBottom>Dashboard</Typography>
       <TextField
         label="Enter location"
@@ -88,36 +83,7 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
         margin="normal"
       />
       <TextField
-        label="Holiday Start Date"
-        type="date"
-        value={startDate}
-        onChange={e => setStartDate(e.target.value)}
-        fullWidth
-        margin="normal"
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-      <TextField
-        label="Holiday End Date"
-        type="date"
-        value={endDate}
-        onChange={e => setEndDate(e.target.value)}
-        fullWidth
-        margin="normal"
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-      <TextField
-        label="Interests"
-        value={interests}
-        onChange={e => setInterests(e.target.value)}
-        fullWidth
-        margin="normal"
-      />
-      <TextField
-        label="Preferences"
+        label="Your preferences"
         value={preferences}
         onChange={e => setPreferences(e.target.value)}
         fullWidth
@@ -151,11 +117,18 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
       <Box mt={4}>
         <Typography variant="h5">Restaurants</Typography>
         <List>
-          {restaurants.map((restaurant, index) => (
-            <ListItem key={index}>
-              <ListItemText primary={restaurant.name} secondary={restaurant.address} />
-            </ListItem>
-          ))}
+        {recommendations.map((recommendation, index) => (
+        <RestaurantListItem 
+          key={index}
+          img = 'ok' 
+          restaurantName={recommendation.restaurant_name}
+          restaurantAward={recommendation.popularity_detailed}
+          restaurantCountry={recommendation.country}
+          restaurantCity={recommendation.city}
+          restaurantRating={recommendation.avg_rating}
+          restaurantAddress={recommendation.address}
+          />
+      ))}
         </List>
       </Box>
       <Box mt={4}>
