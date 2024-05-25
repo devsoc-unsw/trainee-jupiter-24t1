@@ -6,6 +6,10 @@ import { InputError, AccessError } from './error';
 interface User {
   name: string;
   password: string;
+  location: string;
+  preferences: string[];
+  isVegetarian: boolean;
+  isGlutenFree: boolean;
   sessionActive: boolean;
 }
 
@@ -165,7 +169,7 @@ export const logout = (email: string): Promise<void> =>
     resolve();
   });
 
-export const register = (email: string, password: string, name: string) =>
+export const register = (email: string, password: string, name: string, location: string, preferences: string[], isVegetarian: boolean, isGlutenFree: boolean) =>
   resourceLock((resolve, reject) => {
     if (!email) {
       return reject(new InputError('Must provide an email for user registration'));
@@ -179,6 +183,10 @@ export const register = (email: string, password: string, name: string) =>
       users[email] = {
         name,
         password,
+        location,
+        preferences,
+        isVegetarian,
+        isGlutenFree,
         sessionActive: true,
       };
       save();

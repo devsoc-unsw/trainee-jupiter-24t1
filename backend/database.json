@@ -1,24 +1,16 @@
 {
   "users": {
-    "test@test.com": {
-      "name": "test",
-      "password": "test",
-      "sessionActive": false
-    },
-    "young@ok.com": {
+    "justin@ok.com": {
       "name": "Justin",
       "password": "qwerty",
+      "location": "Paris",
+      "preferences": [
+        "french",
+        "bistro"
+      ],
+      "isVegetarian": false,
+      "isGlutenFree": true,
       "sessionActive": true
-    },
-    "second@user.com": {
-      "name": "Second",
-      "password": "qwerty",
-      "sessionActive": true
-    },
-    "third@test.com": {
-      "name": "third",
-      "password": "third",
-      "sessionActive": false
     }
   },
   "listings": {},

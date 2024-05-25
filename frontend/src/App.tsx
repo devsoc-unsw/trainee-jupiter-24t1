@@ -4,6 +4,7 @@ import { TextField, Button, Box, Typography, Snackbar } from '@mui/material';
 import Dashboard from './Dashboard';
 import { login, register, logout, AuthResponse, ErrorResponse } from './apiService';
 import Profile from './Profile';
+import MultistepForm from './MultistepForm/MultistepForm';
 
 const App = () => {
   // States
@@ -64,7 +65,7 @@ const App = () => {
     }
 
     try {
-      const response = await register(registerEmail, registerPassword, registerName);
+      const response = await register(registerEmail, registerPassword, registerName, 'Paris', [], false, false);
 
       if (isAuthResponse(response)) {
         setIsLogged(true);
@@ -200,6 +201,7 @@ const App = () => {
         <Route path="/" element={getHomeElement()} />
         <Route path="/dashboard" element={getDashboardElement()} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/form" element={MultistepForm()} />
       </Routes>
     </BrowserRouter>
   );

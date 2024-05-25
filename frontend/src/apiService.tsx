@@ -77,8 +77,8 @@ export const login = async (email: string, password: string): Promise<AuthRespon
  * Registers a new user with provided email, password, and name.
  */
 // Function to register a new user
-export const register = async (email: string, password: string, name: string): Promise<AuthResponse | ErrorResponse> => {
-  const data = await apiCall('user/auth/register', 'POST', { email, password, name });
+export const register = async (email: string, password: string, name: string, location: string, preferences: string[], isVegetarian: boolean, isGlutenFree: boolean): Promise<AuthResponse | ErrorResponse> => {
+  const data = await apiCall('user/auth/register', 'POST', { email, password, name, location, preferences, isVegetarian, isGlutenFree });
   if (data.token) {
     localStorage.setItem('authToken', data.token); // Store the token in localStorage
   }
