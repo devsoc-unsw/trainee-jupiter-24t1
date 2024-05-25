@@ -4,8 +4,6 @@ import { TextField, Button, Box, Typography, Snackbar } from '@mui/material';
 import Dashboard from './Dashboard';
 import { login, register, logout, AuthResponse, ErrorResponse } from './apiService';
 import MultistepForm from './MultistepForm/MultistepForm';
-import { prefetchDNS } from 'react-dom';
-import PreferencesStep from './MultistepForm/PreferenceStep';
 
 const App = () => {
   // States
@@ -66,7 +64,7 @@ const App = () => {
     }
 
     try {
-      const response = await register(registerEmail, registerPassword, registerName, location, Preferences, isVegetarian, isGlutenFree);
+      const response = await register(registerEmail, registerPassword, registerName, 'Paris', [], false, false);
 
       if (isAuthResponse(response)) {
         setIsLogged(true);

@@ -1,5 +1,18 @@
 {
-  "users": {},
+  "users": {
+    "justin@ok.com": {
+      "name": "Justin",
+      "password": "qwerty",
+      "location": "Paris",
+      "preferences": [
+        "french",
+        "bistro"
+      ],
+      "isVegetarian": false,
+      "isGlutenFree": true,
+      "sessionActive": true
+    }
+  },
   "listings": {},
   "bookings": {}
 }
