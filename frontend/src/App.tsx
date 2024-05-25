@@ -4,6 +4,8 @@ import { TextField, Button, Box, Typography, Snackbar } from '@mui/material';
 import Dashboard from './Dashboard';
 import { login, register, logout, AuthResponse, ErrorResponse } from './apiService';
 import MultistepForm from './MultistepForm/MultistepForm';
+import { prefetchDNS } from 'react-dom';
+import PreferencesStep from './MultistepForm/PreferenceStep';
 
 const App = () => {
   // States
@@ -22,29 +24,34 @@ const App = () => {
   };
 
   // login function
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!loginEmail || !loginPassword) {
       setError('Please fill in all fields');
       return;
     }
 
-    login(loginEmail, loginPassword)
-      .then(response => {
-        if (isAuthResponse(response)) {
-          setIsLogged(true);
-          setLoginPassword(''); // clearing password field upon login
-        } else {
-          setError('Login failed: ' + response.error);
-        }
-      })
-      .catch(error => {
+    try {
+      const response = await login(loginEmail, loginPassword);
+
+      if (isAuthResponse(response)) {
+        setIsLogged(true);
+        setLoginEmail('')
+        setLoginPassword(''); // clearing password field upon login
+      } else {
+        setError('Login failed: ' + response.error);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
         setError('Login request failed: ' + error.message);
-      });
+      } else {
+        setError('Login request failed');
+      }
+    }
   };
 
-  // register function
-  const handleRegister = () => {
 
+  // register function
+  const handleRegister = async () => {
     if (!registerEmail || !registerPassword || !registerName || !confirmPassword) {
       setError('Please fill in all fields');
       return;
@@ -57,34 +64,44 @@ const App = () => {
       setConfirmPassword('');
       return;
     }
-    register(registerEmail, registerPassword, registerName, '', [], false, false)
-      .then(response => {
-        if (isAuthResponse(response)) {
-          setIsLogged(true);
-          // clearing all register fields upon register
-          setRegisterEmail('');
-          setRegisterName('');
-          setRegisterPassword('');
-          setConfirmPassword('');
-        } else {
-          setError('Registration failed: ' + response.error);
-        }
-      })
-      .catch(error => {
+
+    try {
+      const response = await register(registerEmail, registerPassword, registerName, location, Preferences, isVegetarian, isGlutenFree);
+
+      if (isAuthResponse(response)) {
+        setIsLogged(true);
+        // clearing all register fields upon register
+        setRegisterEmail('');
+        setRegisterName('');
+        setRegisterPassword('');
+        setConfirmPassword('');
+      } else {
+        setError('Registration failed: ' + response.error);
+      }
+    } catch (error: unknown) {
+      if (error instanceof Error) {
         setError('Registration request failed: ' + error.message);
-      });
+      } else {
+        setError('Registration request failed');
+      }
+    }
   };
 
+
   // logout function
-  const handleLogout = () => {
-    logout()
-      .then(() => {
-        setIsLogged(false);
-      })
-      .catch(error => {
-        console.error('Logout failed:', error);
-      });
+  const handleLogout = async () => {
+    try {
+      await logout();
+      setIsLogged(false);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Logout failed:', error.message);
+      } else {
+        console.error('Logout failed with an unknown error.');
+      }
+    }
   };
+
 
   const handleCloseError = () => {
     setError('');
@@ -94,7 +111,7 @@ const App = () => {
     if (!isLogged) {
       return (
         <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" minHeight="100vh" p={2}>
-          <Typography variant="h4" color="Blue" gutterBottom>Welcome to [NAME]</Typography>
+          <Typography variant="h4" color="Blue" gutterBottom>Welcome to Wonderland</Typography>
           {!showRegister ? (
             <>
               {/* Login Fields */}

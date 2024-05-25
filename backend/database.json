@@ -1,33 +1,5 @@
 {
-  "users": {
-    "test@test.com": {
-      "name": "test",
-      "password": "test",
-      "sessionActive": false
-    },
-    "young@ok.com": {
-      "name": "Justin",
-      "password": "qwerty",
-      "sessionActive": true
-    },
-    "second@user.com": {
-      "name": "Second",
-      "password": "qwerty",
-      "sessionActive": true
-    },
-    "justin@ok.com": {
-      "name": "Justin",
-      "password": "qwerty",
-      "location": "Paris",
-      "preferences": [
-        "french",
-        "bistro"
-      ],
-      "isVegetarian": true,
-      "isGlutenFree": false,
-      "sessionActive": true
-    }
-  },
+  "users": {},
   "listings": {},
   "bookings": {}
 }
