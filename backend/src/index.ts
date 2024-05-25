@@ -93,8 +93,8 @@ app.post(
 app.post(
   '/user/auth/register',
   catchErrors(async (req: Request, res: Response) => {
-    const { email, password, name } = req.body;
-    const token = await register(email, password, name);
+    const { email, password, name, location, preferences, isVegetarian, isGlutenFree } = req.body;
+    const token = await register(email, password, name, location, preferences, isVegetarian, isGlutenFree);
     return res.json({ token });
   }),
 );

@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Snackbar } from '@mui/material';
 import Dashboard from './Dashboard';
 import { login, register, logout, AuthResponse, ErrorResponse } from './apiService';
+import MultistepForm from './MultistepForm/MultistepForm';
 
 const App = () => {
   // States
@@ -56,7 +57,7 @@ const App = () => {
       setConfirmPassword('');
       return;
     }
-    register(registerEmail, registerPassword, registerName)
+    register(registerEmail, registerPassword, registerName, '', [], false, false)
       .then(response => {
         if (isAuthResponse(response)) {
           setIsLogged(true);
@@ -183,6 +184,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={getHomeElement()} />
         <Route path="/dashboard" element={getDashboardElement()} />
+        <Route path="/form" element={MultistepForm()} />
       </Routes>
     </BrowserRouter>
   );

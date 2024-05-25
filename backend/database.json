@@ -14,6 +14,18 @@
       "name": "Second",
       "password": "qwerty",
       "sessionActive": true
+    },
+    "justin@ok.com": {
+      "name": "Justin",
+      "password": "qwerty",
+      "location": "Paris",
+      "preferences": [
+        "french",
+        "bistro"
+      ],
+      "isVegetarian": true,
+      "isGlutenFree": false,
+      "sessionActive": true
     }
   },
   "listings": {},
