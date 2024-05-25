@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Snackbar } from '@mui/material';
 import Dashboard from './Dashboard';
 import { login, register, logout, AuthResponse, ErrorResponse } from './apiService';
+import Profile from './Profile';
 
 const App = () => {
   // States
@@ -198,6 +199,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={getHomeElement()} />
         <Route path="/dashboard" element={getDashboardElement()} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
   );

@@ -24,6 +24,14 @@ export interface AuthResponse {
 export interface ErrorResponse {
   error: string;
 }
+
+// Interface for user profile
+export interface UserProfile {
+  email: string;
+  name: string;
+  password: string;
+}
+
 // User authentication functions
 /**
  * Helper function to make API requests.
@@ -111,5 +119,16 @@ export interface RestaurantRecommendation {
 
 export const recommend = async (city: string, userInterests: string[]): Promise<RestaurantRecommendation[]> => {
   const data = await apiCall('recommend/restaurants', 'POST', { city, userInterests });
+  return data;
+};
+
+export const getProfile = async (): Promise<UserProfile> => {
+  const data = await apiCall('user/profile', 'GET');
+  return data;
+};
+
+
+export const editProfile = async (updates: Partial<UserProfile>): Promise<UserProfile> => {
+  const data = await apiCall('user/profile', 'PATCH', updates);
   return data;
 };
