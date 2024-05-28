@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, List, ListItem, ListItemText, Snackbar } from '@mui/material';
-import { getNearbyEvents, getNearbyRestaurants, getNearbyAccommodation, Event, Accommodation, RestaurantRecommendation, recommend } from './apiService';
+import React, { useState, useEffect } from 'react';
+import { TextField, Button, Box, Typography, List, Snackbar } from '@mui/material';
+import { RestaurantRecommendation, getUserByEmail, recommend } from './apiService';
 import RestaurantListItem from './RestaurantListItem';
 import { User } from './types';
+import { useNavigate } from 'react-router-dom';
 
 interface DashboardProps {
   handleLogout: () => void;
