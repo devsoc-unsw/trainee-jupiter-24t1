@@ -31,7 +31,7 @@ const NameStep: React.FC<NameStepProps> = ({ name, setName, nextStep }) => {
         <div className="flex justify-start mt-4">
           <button
             onClick={nextStep}
-            className="bg-green-400 rounded-3xl text-white font-bold text-lg py-2 px-6"
+            className="relative py-2 px-8 border-2 border-green-400 text-black text-lg font-bold nded-full overflow-hidden bg-white rounded-full transition-all duration-400 ease-in-out shadow-md hover:scale-105 hover:text-white hover:shadow-lg active:scale-90 before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-green-500 before:to-green-300 before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-full hover:before:left-0"
           >
             Next
           </button>
