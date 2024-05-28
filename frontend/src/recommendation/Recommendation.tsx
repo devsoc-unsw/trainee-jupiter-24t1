@@ -1,4 +1,3 @@
-import { List } from "@mui/material";
 import RestaurantListItem from "../RestaurantListItem";
 import { RestaurantRecommendation, getUserByEmail, recommend } from "../apiService";
 import { useEffect, useState } from "react";
@@ -58,38 +57,43 @@ const Recommendation = () => {
   };
 
   return (
-    <div>
-      <section>
-        <img src="https://media-cdn.tripadvisor.com/media/photo-w/11/f7/d0/a1/akira-back.jpg" alt="restaurant heading" />
-        <div>
+    <div className="flex flex-col items-center">
+      <section className="w-full relative h-[40vh] overflow-hidden">
+        <img
+          src="https://media-cdn.tripadvisor.com/media/photo-w/11/f7/d0/a1/akira-back.jpg"
+          alt="restaurant heading"
+          className="absolute top-1/2 left-1/2 w-full h-auto transform -translate-x-1/2 -translate-y-1/2 object-cover"
+        />
+        <div className="absolute bottom-0 w-full text-center bg-opacity-50 bg-black text-white py-4">
           <p>These are recommended for you that we believe</p>
-          <h2>Best Matches of Your Interests</h2>
+          <h2 className="text-2xl font-bold">Best Matches of Your Interests</h2>
         </div>
       </section>
-      <section>
+      <section className="mt-4 text-red-500">
         {error}
       </section>
-      <section>
+      <section className="mt-4 text-xl">
         Hi, {user.name}
       </section>
-      <section>
-        <List>
+      <section className="mt-8 w-3/5">
+        <div className="justify-center grid gap-6">
           {recommendations.map((recommendation, index) => (
-          <RestaurantListItem 
-            key={index}
-            img = 'ok' 
-            restaurantName={recommendation.restaurant_name}
-            restaurantAward={recommendation.popularity_detailed}
-            restaurantCountry={recommendation.country}
-            restaurantCity={recommendation.city}
-            restaurantRating={recommendation.avg_rating}
-            restaurantAddress={recommendation.address}
-            />
+            <RestaurantListItem 
+              key={index}
+              img = 'ok' 
+              restaurantName={recommendation.restaurant_name}
+              restaurantAward={recommendation.popularity_detailed}
+              restaurantCountry={recommendation.country}
+              restaurantCity={recommendation.city}
+              restaurantRating={recommendation.avg_rating}
+              restaurantAddress={recommendation.address}
+              restaurantCuisines={recommendation.cuisines.split(',').map(word => word.trim())}
+              />
           ))}
-        </List>
+        </div>
       </section>
     </div>
-  )
+  );
 }
 
 export default Recommendation;

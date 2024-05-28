@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Snackbar } from '@mui/material';
 import Dashboard from './Dashboard';
-import { login, register, logout, AuthResponse, ErrorResponse } from './apiService';
+import { login, register, logout } from './apiService';
 import Profile from './Profile';
 import MultistepForm from './MultistepForm/MultistepForm';
 import Recommendation from './recommendation/Recommendation';
@@ -20,10 +20,6 @@ const App = () => {
   const [showRegister, setShowRegister] = useState(false);
   const [error, setError] = useState<string>('');
 
-  const isAuthResponse = (response: AuthResponse | ErrorResponse): response is AuthResponse => {
-    return (response as AuthResponse).token !== undefined;
-  };
-
   // login function
   const handleLogin = async () => {
     if (!loginEmail || !loginPassword) {
@@ -34,7 +30,7 @@ const App = () => {
     try {
       const response = await login(loginEmail, loginPassword);
 
-      if (isAuthResponse(response)) {
+      if (response.success) {
         setIsLogged(true);
         setLoginEmail('')
         setLoginPassword(''); // clearing password field upon login
@@ -69,7 +65,7 @@ const App = () => {
     try {
       const response = await register(registerEmail, registerPassword, registerName, 'Paris', [], false, false);
 
-      if (isAuthResponse(response)) {
+      if (response.success) {
         setIsLogged(true);
         // clearing all register fields upon register
         setRegisterEmail('');

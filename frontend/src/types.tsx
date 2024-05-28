@@ -15,5 +15,6 @@ export interface RestaurantListItemType {
   restaurantCountry: string,
   restaurantCity: string,
   restaurantRating: string,
-  restaurantAddress: string, 
+  restaurantAddress: string,
+  restaurantCuisines: string[],
 }

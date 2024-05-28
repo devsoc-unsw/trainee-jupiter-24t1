@@ -67,25 +67,33 @@ const apiCall = async (path: string, method: string, body?: NonNullable<unknown>
  * Logs in a user with provided email and password.
  */
 // User authentication function for logging in
-export const login = async (email: string, password: string): Promise<AuthResponse | ErrorResponse> => {
-  const data = await apiCall('user/auth/login', 'POST', { email, password });
-  if (data.token) {
-    localStorage.setItem('authToken', data.token); // Store the token in localStorage
+export const login = async (email: string, password: string) => {
+  try {
+    const data = await apiCall('user/auth/login', 'POST', { email, password });
+    if (data.token) {
+      localStorage.setItem('authToken', data.token); // Store the token in localStorage
+    }
+    return { cusses: true, data };
+  } catch (error) {
+    return { success: false, error: JSON.stringify(error) };
   }
-  return data;
 };
 
 /**
  * Registers a new user with provided email, password, and name.
  */
 // Function to register a new user
-export const register = async (email: string, password: string, name: string, location: string, preferences: string[], isVegetarian: boolean, isGlutenFree: boolean): Promise<AuthResponse | ErrorResponse> => {
-  const data = await apiCall('user/auth/register', 'POST', { email, password, name, location, preferences, isVegetarian, isGlutenFree });
-  if (data.token) {
-    localStorage.setItem('authToken', data.token); // Store the token in localStorage
-    localStorage.setItem('email', email);
+export const register = async (email: string, password: string, name: string, location: string, preferences: string[], isVegetarian: boolean, isGlutenFree: boolean) => {
+  try {
+    const data = await apiCall('user/auth/register', 'POST', { email, password, name, location, preferences, isVegetarian, isGlutenFree });
+    if (data.token) {
+      localStorage.setItem('authToken', data.token); // Store the token in localStorage
+      localStorage.setItem('email', email);
+    }
+    return { cusses: true, data };
+  } catch (error) {
+    return { success: false, error: JSON.stringify(error) };
   }
-  return data;
 };
 
 export const logout = (): Promise<void> => {

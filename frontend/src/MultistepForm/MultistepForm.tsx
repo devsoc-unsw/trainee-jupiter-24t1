@@ -7,6 +7,7 @@ import PreferencesStep from './PreferenceStep';
 import { register } from '../apiService';
 import VegetarianStep from './VegetarianStep';
 import GlutenFreeStep from './GlutenFreeStep';
+import { useNavigate } from 'react-router-dom';
 
 const MultistepForm = () => {
   const [step, setStep] = useState(1);
@@ -18,13 +19,28 @@ const MultistepForm = () => {
   const [isVegetarian, setIsVegetarian] = useState(false);
   const [isGlutenFree, setIsGlutenFree] = useState(false);
 
+  const navigate = useNavigate();
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(step - 1);
   const submitForm = () => {
     const formData = { name, email, password, location, preferences, isVegetarian, isGlutenFree };
     console.log('Form Submitted:', formData);
     const preferenceList = preferences.split(" ");
-    register(email, password, name, location, preferenceList, isVegetarian, isGlutenFree);
+    register(email, password, name, location, preferenceList, isVegetarian, isGlutenFree)
+    .then((response) => {
+      // Assuming register returns a promise and is successful
+      if (response.success) {
+        // Navigate to the recommendation page
+        navigate('/recommendation');
+      } else {
+        // Handle registration failure
+        console.error('Registration failed:', response.error);
+      }
+    })
+    .catch((error) => {
+      // Handle errors from the register function
+      console.error('An error occurred during registration:', error);
+    });
   };
 
   const renderStep = (): React.ReactNode => {
