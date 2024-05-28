@@ -1,13 +1,4 @@
-interface RestaurantListItemType {
-  img: string, 
-  restaurantName: string, 
-  restaurantAward: string,
-  restaurantCountry: string,
-  restaurantCity: string,
-  restaurantRating: string,
-  restaurantAddress: string, 
-}
-
+import { RestaurantListItemType } from "./types";
 
 const RestaurantListItem: React.FC<RestaurantListItemType> = ({ 
   img, 

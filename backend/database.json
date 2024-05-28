@@ -11,6 +11,17 @@
       "isVegetarian": false,
       "isGlutenFree": true,
       "sessionActive": true
+    },
+    "justins@ok.com": {
+      "name": "Justin",
+      "password": "qwerty",
+      "location": "Paris",
+      "preferences": [
+        "French"
+      ],
+      "isVegetarian": false,
+      "isGlutenFree": true,
+      "sessionActive": true
     }
   },
   "listings": {},

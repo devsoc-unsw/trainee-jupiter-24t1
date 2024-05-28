@@ -1,42 +1,44 @@
-import React, { useState } from 'react';
-import { TextField, Button, Box, Typography, List, ListItem, ListItemText, Snackbar } from '@mui/material';
-import { getNearbyEvents, getNearbyRestaurants, getNearbyAccommodation, Event, Accommodation, RestaurantRecommendation, recommend } from './apiService';
+import React, { useEffect, useState } from 'react';
+import { TextField, Button, Box, Typography, List, Snackbar } from '@mui/material';
+import { RestaurantRecommendation, recommend, getUserByEmail } from './apiService';
 import RestaurantListItem from './RestaurantListItem';
+import { User } from './types';
 
 interface DashboardProps {
   handleLogout: () => void;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
-  const [location, setLocation] = useState('');
+  // const [location, setLocation] = useState('');
   const [preferences, setPreferences] = useState('');
-  const [events, setEvents] = useState<Event[]>([]);
-  const [accommodations, setAccommodations] = useState<Accommodation[]>([]);
   const [error, setError] = useState('');
+  const [user, setUser] = useState<User>({
+    name: "",
+    password: "",
+    location: "",
+    preferences: [],
+    isVegetarian: false,
+    isGlutenFree: false,
+    sessionActive: false,
+  });
 
   const [recommendations, setRecommendations] = useState<RestaurantRecommendation[]>([]);
 
-  const handleSearch = () => {
-    if (!location || !preferences) {
-      setError('Please fill in all fields');
-      return;
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      const email = localStorage.getItem('email');
+      if (email) {
+        try {
+          const response = await getUserByEmail(email);
+          setUser(response);
+        } catch (err) {
+          setError('Failed to fetch user details');
+        }
+      }
     }
 
-    Promise.all([
-      getNearbyEvents(location),
-      getNearbyRestaurants(location),
-      getNearbyAccommodation(location)
-    ])
-      .then(([eventsData, accommodationsData]) => {
-        setEvents(eventsData);
-        setAccommodations(accommodationsData);
-        setError('');
-      })
-      .catch(err => {
-        setError('Failed to fetch suggestions');
-        console.error(err);
-      });
-  };
+    fetchUserDetails();
+  }, [])
 
   const handleLogoutClick = () => {
     handleLogout();
@@ -46,8 +48,8 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
     setError('');
   };
 
-  const recommendRestaurants = async (city: string, userInterests: string[]): Promise<RestaurantRecommendation[]> => {
-    const response = await recommend(city, userInterests);
+  const recommendRestaurants = async (city: string, userInterests: string[], isVegetarian: boolean, isGlutenFree: boolean, minRating: number): Promise<RestaurantRecommendation[]> => {
+    const response = await recommend(city, userInterests, isVegetarian, isGlutenFree, minRating);
 
     return response;
   };
@@ -63,7 +65,7 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
         'Serves Alcohol', 
         'Accepts Credit Cards', 
         'Table Service',
-      ]);
+      ], user.isVegetarian, user.isGlutenFree, 0);
       setRecommendations(fetchedRecommendations);
     } catch (err) {
       setError((err as Error).message);
@@ -74,14 +76,14 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
     <Box p={3}>
       <Button onClick={handleRecommendButtonClick}>Recommend</Button>
       <Typography variant="h4" gutterBottom>Dashboard</Typography>
-      <TextField
+      {/* <TextField
         label="Enter location"
         value={location}
         onChange={e => setLocation(e.target.value)}
         onKeyPress={e => e.key === 'Enter' && handleSearch()}
         fullWidth
         margin="normal"
-      />
+      /> */}
       <TextField
         label="Your preferences"
         value={preferences}
@@ -89,7 +91,6 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
         fullWidth
         margin="normal"
       />
-      <Button onClick={handleSearch} variant="contained" color="primary" sx={{ mt: 2 }}>Search</Button>
       <Button onClick={handleLogoutClick} variant="contained" color="error" sx={{ mt: 2, ml: 2 }}>Logout</Button>
       {error && (
         <Snackbar
@@ -104,7 +105,7 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
           }
         />
       )}
-      <Box mt={4}>
+      {/* <Box mt={4}>
         <Typography variant="h5">Events</Typography>
         <List>
           {events.map((event, index) => (
@@ -113,7 +114,7 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
             </ListItem>
           ))}
         </List>
-      </Box>
+      </Box> */}
       <Box mt={4}>
         <Typography variant="h5">Restaurants</Typography>
         <List>
@@ -131,7 +132,7 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
       ))}
         </List>
       </Box>
-      <Box mt={4}>
+      {/* <Box mt={4}>
         <Typography variant="h5">Accommodation</Typography>
         <List>
           {accommodations.map((accommodation, index) => (
@@ -140,7 +141,7 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
             </ListItem>
           ))}
         </List>
-      </Box>
+      </Box> */}
     </Box>
   );
 }

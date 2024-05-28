@@ -32,6 +32,7 @@ import {
   removeBooking,
   acceptBooking,
   declineBooking,
+  getUserByEmail,
 } from './service';
 import path from 'path';
 
@@ -311,6 +312,32 @@ app.post('/recommend/restaurants', async (req, res) => {
   } catch (error) {
     const errorMessage = (error instanceof Error) ? error.message : 'Unknown error';
     res.status(500).json({ error: errorMessage });
+  }
+});
+
+app.get('/api/user', async (req, res) => {
+  const email = req.query.email;
+  console.log(email);
+
+  if (!email || typeof email !== 'string') {
+    console.error('Email query parameter is missing or invalid');
+    return res.status(400).json({ error: 'Email is required and must be a string' });
+  }
+
+  try {
+    const user = await getUserByEmail(email);
+    console.log(user);
+
+    if (!user) {
+      console.warn('No user found with email:', email);
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    console.log('User found:', user);
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error('Error occurred while retrieving user:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });
 

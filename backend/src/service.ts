@@ -2,6 +2,7 @@ import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import AsyncLock from 'async-lock';
 import { InputError, AccessError } from './error';
+import { emitWarning } from 'process';
 
 interface User {
   name: string;
@@ -194,6 +195,10 @@ export const register = (email: string, password: string, name: string, location
       resolve(token);
     }
   });
+
+export const getUserByEmail = async (email: string): Promise<User> => {
+  return users[email];
+}
 
 /***************************************************************
                        Listing Functions

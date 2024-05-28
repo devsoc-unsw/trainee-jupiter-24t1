@@ -1,3 +1,5 @@
+import { User } from "./types";
+
 // apiService.ts
 const BASE_URL = 'http://localhost:3000'; // Adjust the base URL if needed
 
@@ -73,6 +75,7 @@ export const register = async (email: string, password: string, name: string, lo
   const data = await apiCall('user/auth/register', 'POST', { email, password, name, location, preferences, isVegetarian, isGlutenFree });
   if (data.token) {
     localStorage.setItem('authToken', data.token); // Store the token in localStorage
+    localStorage.setItem('email', email);
   }
   return data;
 };
@@ -82,20 +85,6 @@ export const logout = (): Promise<void> => {
     .then(() => {
       localStorage.removeItem('authToken'); // Remove the token from localStorage
     });
-};
-
-export const getNearbyEvents = (location: string): Promise<Event[]> => {
-  return apiCall(`events?location=${location}`, 'GET');
-};
-
-// Function to fetch nearby restaurants
-export const getNearbyRestaurants = (location: string): Promise<Restaurant[]> => {
-  return apiCall(`restaurants?location=${location}`, 'GET');
-};
-
-// Function to fetch nearby accommodations
-export const getNearbyAccommodation = (location: string): Promise<Accommodation[]> => {
-  return apiCall(`accommodations?location=${location}`, 'GET');
 };
 
 export interface RestaurantRecommendation {
@@ -109,7 +98,12 @@ export interface RestaurantRecommendation {
   tokens: string[];
 }
 
-export const recommend = async (city: string, userInterests: string[]): Promise<RestaurantRecommendation[]> => {
-  const data = await apiCall('recommend/restaurants', 'POST', { city, userInterests });
+export const recommend = async (city: string, userInterests: string[], isVegetarian: boolean, isGlutenFree: boolean, minRating: number = 0): Promise<RestaurantRecommendation[]> => {
+  const data = await apiCall('recommend/restaurants', 'POST', { city, userInterests, isVegetarian, isGlutenFree, minRating });
   return data;
 };
+
+export const getUserByEmail = async(email: string): Promise<User> => {
+  const data = await apiCall(`api/user?email=${email}`, 'GET');
+  return data;
+}
