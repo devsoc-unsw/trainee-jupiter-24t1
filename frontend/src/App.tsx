@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { TextField, Button, Box, Typography, Snackbar } from '@mui/material';
 import Dashboard from './Dashboard';
 import { login, register, logout, AuthResponse, ErrorResponse } from './apiService';
+import Profile from './Profile';
 import MultistepForm from './MultistepForm/MultistepForm';
 import Recommendation from './recommendation/Recommendation';
 import Home from './home';
@@ -202,6 +203,7 @@ const App = () => {
         <Route path="/" element={getHomeElement()} />
         <Route path="/home" element={<Home />} />
         <Route path="/dashboard" element={getDashboardElement()} />
+        <Route path="/profile" element={<Profile />} />
         <Route path="/form" element={<MultistepForm />} />
         <Route path="/recommend" element={Recommendation()} />
       </Routes>

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Typography, List, Snackbar } from '@mui/material';
-import { RestaurantRecommendation, recommend, getUserByEmail } from './apiService';
+import React, { useState } from 'react';
+import { TextField, Button, Box, Typography, List, ListItem, ListItemText, Snackbar } from '@mui/material';
+import { getNearbyEvents, getNearbyRestaurants, getNearbyAccommodation, Event, Accommodation, RestaurantRecommendation, recommend } from './apiService';
 import RestaurantListItem from './RestaurantListItem';
 import { User } from './types';
 
@@ -23,6 +23,8 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
   });
 
   const [recommendations, setRecommendations] = useState<RestaurantRecommendation[]>([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -57,13 +59,13 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
   const handleRecommendButtonClick = async () => {
     try {
       const fetchedRecommendations = await recommendRestaurants('Paris', [
-        'Cheap Eats', 
-        'French', 
-        'Reservations', 
-        'Seating', 
-        'Wheelchair Accessible', 
-        'Serves Alcohol', 
-        'Accepts Credit Cards', 
+        'Cheap Eats',
+        'French',
+        'Reservations',
+        'Seating',
+        'Wheelchair Accessible',
+        'Serves Alcohol',
+        'Accepts Credit Cards',
         'Table Service',
       ], user.isVegetarian, user.isGlutenFree, 0);
       setRecommendations(fetchedRecommendations);
@@ -72,8 +74,15 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
     }
   };
 
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
+
   return (
     <Box p={3}>
+      <Box display="flex" justifyContent="flex-end">
+        <Button onClick={handleProfileClick} variant="contained" color="primary">Profile</Button>
+      </Box>
       <Button onClick={handleRecommendButtonClick}>Recommend</Button>
       <Typography variant="h4" gutterBottom>Dashboard</Typography>
       {/* <TextField
@@ -118,18 +127,18 @@ const Dashboard: React.FC<DashboardProps> = ({ handleLogout }) => {
       <Box mt={4}>
         <Typography variant="h5">Restaurants</Typography>
         <List>
-        {recommendations.map((recommendation, index) => (
-        <RestaurantListItem 
-          key={index}
-          img = 'ok' 
-          restaurantName={recommendation.restaurant_name}
-          restaurantAward={recommendation.popularity_detailed}
-          restaurantCountry={recommendation.country}
-          restaurantCity={recommendation.city}
-          restaurantRating={recommendation.avg_rating}
-          restaurantAddress={recommendation.address}
-          />
-      ))}
+          {recommendations.map((recommendation, index) => (
+            <RestaurantListItem
+              key={index}
+              img='ok'
+              restaurantName={recommendation.restaurant_name}
+              restaurantAward={recommendation.popularity_detailed}
+              restaurantCountry={recommendation.country}
+              restaurantCity={recommendation.city}
+              restaurantRating={recommendation.avg_rating}
+              restaurantAddress={recommendation.address}
+            />
+          ))}
         </List>
       </Box>
       {/* <Box mt={4}>
